@@ -1,0 +1,18 @@
+[
+	{
+		"title": "Persistent Signals",
+		"date": "1673010149454",
+		"segments": [
+			{
+				"type": "TEXT",
+				"title": "Intro",
+				"text": "	While working on a project a few days ago, I stumbled upon an issue. If changing the main scene (using [code]get_tree().change_scene_to()[/code]) from a singleton (autoload) if I emitted a signal right after changing the scene, the new scene wouldn't be able to catch it."
+			},
+			{
+				"type": "TEXT",
+				"title": "Solution",
+				"text": "	I looked some more into it and someone recommended using a delay to allow the scene to load. While this did work, it's not what id call a clean solution. What I ended up going with was calling the [code]emit_signal[/code] function using [code]call_deferred[/code], thus allowing the new scene to properly manifest and emitting the signal on the next frame."
+			}
+		]
+	}
+]

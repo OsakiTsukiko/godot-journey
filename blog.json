@@ -17,5 +17,28 @@
 				"text": "I looked some more into it and someone recommended using a delay to allow the scene to load. While this did work, it's not what id call a clean solution. What I ended up going with was calling the [code]emit_signal[/code] function using [code]call_deferred[/code], thus allowing the new scene to properly manifest and emitting the signal on the next frame."
 			}
 		]
+	},
+	{
+		"title": "Fancy HTTP",
+		"date": "1673018004817",
+		"color": "ffe478",
+		"segments": [
+			{
+				"type": "TEXT",
+				"title": "Intro",
+				"color": "eca76b",
+				"text": "[code]HTTPRequest[/code] nodes are shady at best in godot (3.x). You make a request and you catch it with a signal. This might work if you only use one request at a time or different handling functions for each request, but it becomes painful fast."
+			},
+			{
+				"type": "TEXT",
+				"title": "My Approach",
+				"color": "eca76b",
+				"text": "My approach to this is procedurally generated [code]HTTPRequest[/code] nodes. I have a function that takes as arguments everything that I need for creating a request, as well as an id for the request. The function creates a [code]HTTPNode[/code], adds it to the scene as a child of a node of type [code]Node[/code], makes a request on it, and connects it to a function, adding as arguments the node and the id. The node argument is used to free the node after it was used and the id is used to easily identify the id. The id could be swapped for a function name and used when connecting to have custom functions instead of one function with multiple ids."
+			},
+			{
+				"type": "CODE",
+				"text": "extends Node\n\nonready var networking = $Networking\n\nfunc make_http_req(id: String, url: String, headers: Array, secure, method, req_body: Dictionary):\n\tvar http_req_node: HTTPRequest = HTTPRequest.new()\n\thttp_req_node.use_threads = true\n\tnetworking.add_child(http_req_node)\n\thttp_req_node.connect(\"request_completed\", self, \"http_req_handler\", [http_req_node, id])\n\thttp_req_node.request(\n\t\turl, \n\t\theaders, \n\t\tsecure, \n\t\tmethod, \n\t\tto_json(req_body)\n\t)\n\nfunc http_req_handler(result, response_code, headers, body, req_node, id):\n\treq_node.queue_free()\n\tif (id == \"FIRST_ID\"):\n\t\tpass\n\tif (id == \"SECOND_ID\"):\n\t\tpass"
+			}
+		]
 	}
 ]
